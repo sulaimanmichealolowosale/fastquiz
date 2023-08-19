@@ -43,19 +43,24 @@ async def manage_participant(db: Session = Depends(get_db), current_user: int = 
     return options
 
 
-@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
-async def manage_participant(id: int, db: Session = Depends(get_db), current_user: int = Depends(get_current_user)):
-    option_query = db.query(Option).filter(Option.id == id)
-    option_result = option_query.first()
+@router.delete('/{participant_id}/{quiz_id}', status_code=status.HTTP_204_NO_CONTENT)
+async def manage_participant(participant_id: int, quiz_id: int, db: Session = Depends(get_db),
+                             current_user: int = Depends(get_current_user)):
 
-    check_if_found(option_result, id, "option", "id")
-    option_query.delete(synchronize_session=False)
+    quiz = db.query(Quiz).filter(Quiz.id == quiz_id).first()
+    check_if_found(quiz, quiz_id, "quiz", "id")
+
+    participant_query = db.query(Participant).filter(
+        Participant.id == id, Participant.quiz_id == quiz_id)
+
+    participant_result = participant_query.first()
+
+    check_if_found(participant_result, id, "partitipant", "id")
+    participant_query.delete(synchronize_session=False)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-
 
 
 # A simple Quiz RestAPI created using FastAPI
 
 # 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
-
