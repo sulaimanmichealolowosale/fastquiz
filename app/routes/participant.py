@@ -43,15 +43,6 @@ async def manage_participant(db: Session = Depends(get_db), current_user: int = 
     return options
 
 
-@router.get('/{id}', response_model=GetOption)
-async def manage_participant(id: int, db: Session = Depends(get_db), current_user: int = Depends(get_current_user)):
-    option = db.query(Option).filter(Option.id == id).first()
-
-    check_if_found(option, id, "option", "id")
-
-    return option
-
-
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
 async def manage_participant(id: int, db: Session = Depends(get_db), current_user: int = Depends(get_current_user)):
     option_query = db.query(Option).filter(Option.id == id)
