@@ -7,6 +7,7 @@ from app.utils import hash, check_if_found
 from app.oauth2 import get_current_user
 from typing import List
 
+
 router = APIRouter(
     prefix="/participant",
     tags=["Participant"]
