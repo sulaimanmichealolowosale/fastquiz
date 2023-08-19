@@ -51,11 +51,14 @@ async def manage_participant(participant_id: int, quiz_id: int, db: Session = De
     check_if_found(quiz, quiz_id, "quiz", "id")
 
     participant_query = db.query(Participant).filter(
-        Participant.id == id, Participant.quiz_id == quiz_id)
+        Participant.user_id == participant_id, Participant.quiz_id == quiz_id)
 
     participant_result = participant_query.first()
 
-    check_if_found(participant_result, id, "partitipant", "id")
+    if participant_result is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Participant with id {participant_id} was never added to the quiz")
+
     participant_query.delete(synchronize_session=False)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
